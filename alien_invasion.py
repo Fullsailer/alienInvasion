@@ -24,8 +24,11 @@ class AlienInvasion:
         """Start the main loop for the game."""
         while True:
             self._check_events()
-            
-                    
+            self._update_screen()
+
+    def _update_screen(self):
+        """Update images on the screen, and flip to new screen."""
+                        
             # Redraw the screen during each pass through the loop.
             self.screen.fill(self.settings.bg_color)
             self.ship.blitme()
