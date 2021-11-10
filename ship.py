@@ -17,6 +17,7 @@ class Ship:
 
         #Movement flag
         self.moving_right = False
+    
     def update(self):
         """Update the ship's position based on the movmement flag."""
         if self.moving_right:
