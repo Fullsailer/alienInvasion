@@ -17,7 +17,7 @@ class Bullet(Sprite):
         self.rect.midtop = ai_game.ship.rect.midtop
 
         # Store the bullet's position as a decimal value.
-        self.y = float(self.react.y)
+        self.y = float(self.rect.y)
     
     def update(self):
         """Move the decimal position of the bullet."""
