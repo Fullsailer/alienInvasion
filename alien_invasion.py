@@ -1,6 +1,9 @@
 import sys
+from time import sleep
 import pygame
+from pygame import sprite
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 
@@ -19,8 +22,10 @@ class AlienInvasion:
         
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.aliens = pygame.sprite.Group()
 
-        # Set the backgroun color.
+        self._create_fleet()
+        # Set the background color.
         self.bg_color = (230, 230, 230)
 
     def run_game(self):
@@ -83,6 +88,12 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                  self.bullets.remove(bullet)
+
+            self._check_bullet_alien_collision()
+        
+    def _check_bullet_alien_collisions(self):
+        """Respond to bullet-alien collisions."""
+        # Remove any bullets and aliens that have collided.
         # Check bullet in terminal remove so it doesn't slow down program
         #print(len(self.bullets))
 
@@ -94,6 +105,12 @@ class AlienInvasion:
             bullet.draw_bullet()
 
         pygame.display.flip()
+
+    def _update_aliens(self):
+
+        # Look for alien-ship collisions
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            print("Ship Hit!!!")
 
 
 if __name__ == '__main__':
