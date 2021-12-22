@@ -7,6 +7,7 @@ from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from button import Button
 
 class AlienInvasion:
     """ Overall class to manage game assets and behavior """
@@ -29,6 +30,10 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
+        
+        #Make the Play Button
+        self.play_button = Button(self, "Play")
+        
         # Set the background color.
         self.bg_color = (230, 230, 230)
         
@@ -95,6 +100,10 @@ class AlienInvasion:
             """Update images on the screen, and flip to new screen."""
             self.screen.fill(self.settings.bg_color)
             self.ship.blitme()
+            
+            #Draw the play button if the game is inactive.
+            if not self.stats.game_active:
+                self.play_button.draw_button()
 
             # Make the most recently drawn screen visible.
             pygame.display.flip()
@@ -177,8 +186,7 @@ class AlienInvasion:
         pygame.display.flip()
 
     def _update_aliens(self):
-        """
-        Check if the fleet is at an edge,
+        """Check if the fleet is at an edge,
          then update the positions of all aliens in the fleet.
          """
         self._check_fleet_edges()
