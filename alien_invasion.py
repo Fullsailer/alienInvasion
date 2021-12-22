@@ -4,6 +4,7 @@ import pygame
 from pygame import sprite
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -22,8 +23,10 @@ class AlienInvasion:
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
         
-        # Create an instance to store hame statistics.
+        # Create an instance to store game statistics.
+        #and create a scoreboard.
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
         
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -100,6 +103,10 @@ class AlienInvasion:
             """Update images on the screen, and flip to new screen."""
             self.screen.fill(self.settings.bg_color)
             self.ship.blitme()
+            self.aliens.draw(self.screen) #Do I need to add this? or take it out?
+            
+            #Draw the score information
+            self.sb.show_score()
             
             #Draw the play button if the game is inactive.
             if not self.stats.game_active:
@@ -126,6 +133,9 @@ class AlienInvasion:
         """ Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.pygame.Rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            #Reset the game settings.
+            self.settings.initialize_dynamic_settings()
+            
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
             
@@ -190,13 +200,8 @@ class AlienInvasion:
             #Destroy existing bullets and create new fleet.
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
         
-    def _check_bullet_alien_collisions(self):
-        """Respond to bullet-alien collisions."""
-        # Remove any bullets and aliens that have collided.
-        # Check bullet in terminal remove so it doesn't slow down program
-        #print(len(self.bullets))
-
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
