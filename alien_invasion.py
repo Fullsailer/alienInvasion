@@ -68,7 +68,7 @@ class AlienInvasion:
     
     def _check_play_button(self, mouse_pos):
         """ Start a new game when the player clicks Play."""
-        button_clicked = self.play_button.rect.pygame.Rect.collidepoint(mouse_pos)
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
             #Reset the game settings.
             self.settings.initialize_dynamic_settings()
@@ -171,7 +171,7 @@ class AlienInvasion:
         
     def _check_aliens_bottom(self):
         """Check if any aliens have reached the bottom of the screen."""
-        screen_rect = self.screen.get.rect()
+        screen_rect = self.screen.get_rect()
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= screen_rect.bottom:
                 #Treat this the same as if the ship got hit.
