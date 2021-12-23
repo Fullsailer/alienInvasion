@@ -101,7 +101,7 @@ class AlienInvasion:
 
         if collisions:
             self.stats.score += self.settings.alien_points
-            self.sb.prep_score
+            self.sb.prep_score()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
