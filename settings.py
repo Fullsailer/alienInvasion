@@ -19,11 +19,6 @@ class Settings:
         #Ship settings
         self.ship_speed = 1.5
         self.ship_limit = 3
-<<<<<<< HEAD
-
-        #Scoring
-        self.alien_points = 50
-=======
         
         # Alien settings
         #self.alien_speed = 1.0
@@ -59,4 +54,3 @@ class Settings:
          #Remove print call from final version.
          print(self.alien_points)
         
->>>>>>> origin

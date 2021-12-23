@@ -190,17 +190,6 @@ class AlienInvasion:
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""
         # Remove any bullets and aliens that have collided.
-<<<<<<< HEAD
-        # Check bullet in terminal remove so it doesn't slow down program
-        #print(len(self.bullets))
-        collisions = pygame.sprite.groupcollide(
-            self.bullets, self.aliens, True, True)
-
-        if collisions:
-            self.stats.score += self.settings.alien_points
-            self.sb.prep_score()
-
-=======
             
         # Check for any bullets that have hit aliens.
         # If so, get rid of the bullet and the alien.
@@ -213,7 +202,6 @@ class AlienInvasion:
             self._create_fleet()
             self.settings.increase_speed()
         
->>>>>>> origin
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
