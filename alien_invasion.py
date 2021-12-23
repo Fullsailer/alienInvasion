@@ -1,6 +1,8 @@
 import sys
 from time import sleep
+
 import pygame
+
 from pygame import sprite
 from settings import Settings
 from game_stats import GameStats
@@ -24,7 +26,7 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
         
         # Create an instance to store game statistics.
-        #and create a scoreboard.
+        # and create a scoreboard.
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
         
@@ -37,57 +39,8 @@ class AlienInvasion:
         #Make the Play Button
         self.play_button = Button(self, "Play")
         
-        # Set the background color.
-        self.bg_color = (230, 230, 230)
-        
-    def _create_fleet(self):
-        """Create the fleet of aliens."""
-        # Create an alien and find the number of aliens in a row.
-        #Spacing between each alien is equal to one alien width.
-        alien = Alien(self)
-        alien_width, alien_height = alien.rect.size
-        available_space_x = self.settings.screen_width - (2 * alien_width)
-        number_aliens_x = available_space_x // (2 * alien_width)
-        
-        # Determine the number of rows of aliens that fit on the screen.
-        ship_height = self.ship.rect.height
-        available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
-        number_rows = available_space_y // (2 * alien_height)
-        
-        # Create the full fleat of aliens.
-        for row_number in range(number_rows):
-            for alien_number in range(number_aliens_x):
-                self._create_alien(alien_number, row_number)
-                
-    def _check_fleet_edges(self):
-        """Respond appropriately if any aliens have reached an edge."""
-        for alien in self.aliens.sprites():
-            if alien.check_edges():
-                self._change_fleet_direction()
-                break
-            
-    def _change_fleet_direction(self):
-        """Drop the entire fleet and change the fleets direction."""
-        for alien in self.aliens.sprites():
-            alien.rect.y += self.settings.fleet_drop_speed
-        self.settings.fleet_direction *= -1
-            
-    def _create_alien(self, alien_number, row_number):
-            """Create an alien and place it in the row.""" 
-            alien = Alien(self)
-            alien_width, alien_height = alien.rect.size
-            alien.x = alien_width + 2 * alien_width * alien_number
-            alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
-            self.aliens.add(alien)
-        
-        # Aliens per row
-        # avaible_space_x = settings.screen_width - (2 * alien_width)
-        # Space between each alien
-        # number_aliens_x = available_space_x // (2 * alien_width) 
-        # Determine the vertical space avaiable
-        # available_space_y = settings.screen_height - (3 * alien_height) - ship_height
-        # How many rows of aliens
-        # number_rows = avaiable_space_y // (2 * alien_height)
+        # # Set the background color.
+        # self.bg_color = (230, 230, 230)
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -98,22 +51,6 @@ class AlienInvasion:
                 self._update_bullets()
                 self._update_aliens()
             self._update_screen()
-
-    def _update_screen(self):
-            """Update images on the screen, and flip to new screen."""
-            self.screen.fill(self.settings.bg_color)
-            self.ship.blitme()
-            self.aliens.draw(self.screen) #Do I need to add this? or take it out?
-            
-            #Draw the score information
-            self.sb.show_score()
-            
-            #Draw the play button if the game is inactive.
-            if not self.stats.game_active:
-                self.play_button.draw_button()
-
-            # Make the most recently drawn screen visible.
-            pygame.display.flip()
 
 
     def _check_events(self):
@@ -217,17 +154,7 @@ class AlienInvasion:
             # Increase level.
             self.stats.level += 1
             self.sb.prep_level()
-        
-    def _update_screen(self):
-        """Update images on the screen, and flip to the new screen."""
-        self.screen.fill(self.settings.bg_color)
-        self.ship.blitme()
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        self.aliens.draw(self.screen)
-
-        pygame.display.flip()
-
+            
     def _update_aliens(self):
         """Check if the fleet is at an edge,
          then update the positions of all aliens in the fleet.
@@ -240,7 +167,26 @@ class AlienInvasion:
             self._ship_hit()
             # print("Ship Hit!!!")
         #Look for aliens hitting the bottom of the screen.
-        self._check_aliens_bottom()    
+        self._check_aliens_bottom()   
+        
+    def _check_aliens_bottom(self):
+        """Check if any aliens have reached the bottom of the screen."""
+        screen_rect = self.screen.get.rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                #Treat this the same as if the ship got hit.
+                self._ship_hit()
+                break 
+        
+    def _update_screen(self):
+        """Update images on the screen, and flip to the new screen."""
+        self.screen.fill(self.settings.bg_color)
+        self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        self.aliens.draw(self.screen)
+
+        pygame.display.flip()
         
             
     def _ship_hit(self):
@@ -263,16 +209,71 @@ class AlienInvasion:
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
+            
+    def _create_fleet(self):
+        """Create the fleet of aliens."""
+        # Create an alien and find the number of aliens in a row.
+        #Spacing between each alien is equal to one alien width.
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
+        
+        # Determine the number of rows of aliens that fit on the screen.
+        ship_height = self.ship.rect.height
+        available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
+        number_rows = available_space_y // (2 * alien_height)
+        
+        # Create the full fleat of aliens.
+        for row_number in range(number_rows):
+            for alien_number in range(number_aliens_x):
+                self._create_alien(alien_number, row_number)
     
-
-    def _check_aliens_bottom(self):
-        """Check if any aliens have reached the bottom of the screen."""
-        screen_rect = self.screen.get.rect()
+    def _create_alien(self, alien_number, row_number):
+            """Create an alien and place it in the row.""" 
+            alien = Alien(self)
+            alien_width, alien_height = alien.rect.size
+            alien.x = alien_width + 2 * alien_width * alien_number
+            alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
+            self.aliens.add(alien)
+        
+        # Aliens per row
+        # avaible_space_x = settings.screen_width - (2 * alien_width)
+        # Space between each alien
+        # number_aliens_x = available_space_x // (2 * alien_width) 
+        # Determine the vertical space avaiable
+        # available_space_y = settings.screen_height - (3 * alien_height) - ship_height
+        # How many rows of aliens
+        # number_rows = avaiable_space_y // (2 * alien_height)
+                
+    def _check_fleet_edges(self):
+        """Respond appropriately if any aliens have reached an edge."""
         for alien in self.aliens.sprites():
-            if alien.rect.bottom >= screen_rect.bottom:
-                #Treat this the same as if the ship got hit.
-                self._ship_hit()
+            if alien.check_edges():
+                self._change_fleet_direction()
                 break
+            
+    def _change_fleet_direction(self):
+        """Drop the entire fleet and change the fleets direction."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+            
+    def _update_screen(self):
+            """Update images on the screen, and flip to new screen."""
+            self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
+            self.aliens.draw(self.screen) #Do I need to add this? or take it out?
+            
+            #Draw the score information
+            self.sb.show_score()
+            
+            #Draw the play button if the game is inactive.
+            if not self.stats.game_active:
+                self.play_button.draw_button()
+
+            # Make the most recently drawn screen visible.
+            pygame.display.flip()
 
 if __name__ == '__main__':
     # Make a game instance, and run the game.
